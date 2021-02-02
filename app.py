@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for, request
 from flask_cors import CORS, cross_origin
+from wordParser import parse_word
 import json
 
 app = Flask(__name__)
@@ -64,7 +65,7 @@ wordExample = json.dumps({
 def get_word_example():
     if request.method == 'POST':
         word = request.json['word']
-        return wordExample
+        return json.dumps(parse_word(word))
 
 
 if __name__ == '__main__':
