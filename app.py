@@ -21,7 +21,7 @@ def get_word_example():
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def webhook():
     if request.method == 'POST':
-        repo = git.Repo('https://github.com/AkshachRd/LeardsBackend.git')
+        repo = git.Repo('/')
         origin = repo.remotes.origin
 
         origin.pull()
