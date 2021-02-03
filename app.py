@@ -12,8 +12,9 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def get_word_example():
-    word = request.json['word']
-    return json.dumps(parse_word(word))
+    if request.method == 'POST':
+        word = request.json['word']
+        return json.dumps(parse_word(word))
 
 
 @app.route('/update_server', methods=['POST'])
