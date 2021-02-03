@@ -1,11 +1,3 @@
-from wiktionaryparser import WiktionaryParser
-from functions import is_dictionary_empty
-
-parser = WiktionaryParser()
-parser.set_default_language('english')
-
-print(parser.fetch('awsdasaфsda')[0])
-
-
-print(is_dictionary_empty(parser.fetch('turn on')[0]))
+with open('./text.txt') as file:
+    print(file.read())
 
