@@ -20,6 +20,7 @@ def get_word_example():
 @app.route('/update_server', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def webhook():
+    return 'Hello'
     if request.method == 'POST':
         repo = git.Repo('./')
         origin = repo.remotes.origin
