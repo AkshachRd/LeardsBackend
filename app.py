@@ -5,7 +5,7 @@ import json
 import git
 
 app = Flask(__name__)
-app.debug = True
+app.debug = False
 cors = CORS(app, resources={r"/": {"origins": "*"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 
