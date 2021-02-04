@@ -18,11 +18,11 @@ def get_word_example():
         return json.dumps(parse_word(word))
 
 
-@app.route('/update_server', methods=['POST'])
+@app.route('/webhook', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def webhook():
     if request.method == 'POST':
-        repo = git.Repo('./')
+        repo = git.Repo('./LeardsBackend')
         origin = repo.remotes.origin
 
         origin.pull()
