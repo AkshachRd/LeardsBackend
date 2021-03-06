@@ -3,7 +3,6 @@ from flask_cors import cross_origin
 from wordParser import parse_word
 import json
 import git
-import os
 
 main = Blueprint('main', __name__)
 
@@ -24,7 +23,6 @@ def webhook():
         repo = git.Repo('./LeardsBackend')
         origin = repo.remotes.origin
         origin.pull()
-        os.system('cmd /c "python -m pip install -r requirements.txt"')
 
         return 'Updated PythonAnywhere successfully', 200
     else:
