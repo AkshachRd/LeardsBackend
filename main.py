@@ -1,14 +1,11 @@
 from flask import Blueprint, request
 from flask_cors import cross_origin
 from wordParser import parse_word
-from sqlalchemy import text, create_engine
-from . import db, SQLALCHEMY_DATABASE_URI
 import json
 import git
 import os
 
 main = Blueprint('main', __name__)
-engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
 
 
 # parse a word from wiktionary
@@ -36,9 +33,6 @@ def webhook():
 
 @main.route('/')
 def index():
-    conn = engine.connect()
-    s = text('SELECT * FROM card')
-    result = conn.execute(s)
     return 'Index'
 
 
