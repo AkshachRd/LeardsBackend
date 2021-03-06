@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, request
-from flask_cors import CORS
+
 from flask_sqlalchemy import SQLAlchemy
 from settings import *
 import os
@@ -21,7 +21,6 @@ def create_app(test_config=None):
 
     db.init_app(app)
 
-    cors = CORS(app, resources={r"/": {"origins": "*"}})
     app.config['CORS_HEADERS'] = 'Content-Type'
     app.config.from_mapping(
         SECRET_KEY='dev',
