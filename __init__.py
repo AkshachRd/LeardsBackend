@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, request
-
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from .settings import DB_NAME, DB_HOSTNAME, DB_PASSWORD, DB_USERNAME
 import os
@@ -13,6 +13,7 @@ SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{db_username}:{db_password}@{d
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    CORS(app)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
     app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
