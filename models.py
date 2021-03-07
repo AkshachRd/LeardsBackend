@@ -1,5 +1,6 @@
+from app import *
 from sqlalchemy.dialects.mysql import INTEGER
-from app import db
+
 
 
 class User(db.Model):

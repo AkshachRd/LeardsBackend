@@ -1,8 +1,9 @@
+from models import *
 from flask import Flask, redirect, url_for, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from settings import DB_NAME, DB_HOSTNAME, DB_PASSWORD, DB_USERNAME
-import models
+
 import os
 
 from auth import auth as auth_blueprint
