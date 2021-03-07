@@ -50,6 +50,7 @@ class Card(db.Model):
 
 class Deck_has_card(db.Model):
     __tablename__ = "deck_has_card"
+    __table_args__ = (db.ForeignKeyConstraint('id_deck', 'id_card'))
 
     id_deck = db.Column(INTEGER(unsigned=True), db.ForeignKey("deck.id_deck"))
     id_card = db.Column(INTEGER(unsigned=True), db.ForeignKey("card.id_card"))
@@ -57,6 +58,7 @@ class Deck_has_card(db.Model):
 
 class User_has_deck(db.Model):
     __tablename__ = "user_has_deck"
+    __table_args__ = (db.ForeignKeyConstraint('id_user', 'id_deck'))
 
     id_user = db.Column(INTEGER(unsigned=True), db.ForeignKey("user.id_user"))
     id_deck = db.Column(INTEGER(unsigned=True), db.ForeignKey("deck.id_deck"))
