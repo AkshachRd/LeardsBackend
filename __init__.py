@@ -21,6 +21,7 @@ def create_app(test_config=None):
 
     db.init_app(app)
 
+    app.config['DEBUG'] = True
     app.config['CORS_HEADERS'] = 'Content-Type'
     app.config.from_mapping(
         SECRET_KEY='dev',
