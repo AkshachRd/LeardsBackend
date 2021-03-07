@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app)
 app.config['DEBUG'] = True
 
-SQLALCHEMY_DATABASE_URI = "mysql://{db_username}:{db_password}@{db_hostname}/{db_name}".format(
+SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{db_username}:{db_password}@{db_hostname}/{db_name}".format(
     db_username=DB_USERNAME, db_password=DB_PASSWORD, db_hostname=DB_HOSTNAME, db_name=DB_NAME
 )
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
