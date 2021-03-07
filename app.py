@@ -1,6 +1,6 @@
 from flask import Flask, redirect, url_for, request
 from flask_cors import CORS
-from db import db, SQLALCHEMY_DATABASE_URI
+from db import SQLALCHEMY_DATABASE_URI
 import os
 
 
