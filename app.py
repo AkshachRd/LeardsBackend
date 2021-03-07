@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app)
 app.config['DEBUG'] = True
 
-SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{db_username}:{db_password}@{db_hostname}/{db_name}".format(
+SQLALCHEMY_DATABASE_URI = "mysql://{db_username}:{db_password}@{db_hostname}/{db_name}".format(
     db_username=DB_USERNAME, db_password=DB_PASSWORD, db_hostname=DB_HOSTNAME, db_name=DB_NAME
 )
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
@@ -50,7 +50,6 @@ class Card(db.Model):
 
 class Deck_has_card(db.Model):
     __tablename__ = "deck_has_card"
-    #__table_args__ = (db.ForeignKeyConstraint('id_deck', 'id_card'))
 
     id_deck = db.Column(INTEGER(unsigned=True), db.ForeignKey("deck.id_deck"), primary_key=True)
     id_card = db.Column(INTEGER(unsigned=True), db.ForeignKey("card.id_card"), primary_key=True)
@@ -58,17 +57,16 @@ class Deck_has_card(db.Model):
 
 class User_has_deck(db.Model):
     __tablename__ = "user_has_deck"
-    #__table_args__ = (db.ForeignKeyConstraint('id_user', 'id_deck'))
 
     id_user = db.Column(INTEGER(unsigned=True), db.ForeignKey("user.id_user"), primary_key=True)
     id_deck = db.Column(INTEGER(unsigned=True), db.ForeignKey("deck.id_deck"), primary_key=True)
 
 
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config.from_mapping(
-    SECRET_KEY='dev',
-    DATABASE=SQLALCHEMY_DATABASE_URI,
-)
+#app.config.from_mapping(
+#    SECRET_KEY='dev',
+#    DATABASE=SQLALCHEMY_DATABASE_URI,
+#)
 
 # ensure the instance folder exists
 try:
