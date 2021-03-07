@@ -1,5 +1,5 @@
 from sqlalchemy.dialects.mysql import INTEGER
-from db import db
+from app import db
 
 
 class User(db.Model):
