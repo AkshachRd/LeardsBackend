@@ -13,8 +13,6 @@ def create_app(test_config=None):
     app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    db.init_app(app)
-
     app.config['DEBUG'] = True
     app.config['CORS_HEADERS'] = 'Content-Type'
     app.config.from_mapping(
