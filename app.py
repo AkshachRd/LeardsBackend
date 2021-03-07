@@ -15,6 +15,7 @@ def create_app(test_config=None):
     CORS(app)
 
     db.init_app(app)
+    db.create_all()
 
     app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
     app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
