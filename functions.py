@@ -71,5 +71,4 @@ def extract_card():
 
 
 def test():
-    print(User.query.get(1))
-    return 0
+    return User.query.get(1)

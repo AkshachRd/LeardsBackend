@@ -1,7 +1,7 @@
 from flask import Blueprint, request, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db, User
-from functions import fetch_model
+from functions import fetch_model, test
 
 auth = Blueprint('auth', __name__)
 
@@ -53,4 +53,4 @@ def signup_post():
 
 @auth.route('/logout')
 def logout():
-    return 'Logout'
+    return test()
