@@ -1,6 +1,6 @@
 from flask import Blueprint, request, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
-from app import db, User
+import app
 from functions import fetch_model, test
 
 auth = Blueprint('auth', __name__)
