@@ -1,4 +1,4 @@
-from app import db, Deck, Card, Deck_has_card, User_has_deck, User
+import app
 
 
 def is_dictionary_empty(input_dict):
