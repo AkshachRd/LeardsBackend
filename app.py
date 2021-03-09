@@ -26,7 +26,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = "user"
 
-    id_user = db.Column(INTEGER(unsigned=True), primary_key=True, autoincrement=True)
+    id_user = db.Column(db.String(255), primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
     email = db.Column(db.String(255), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
@@ -36,30 +36,38 @@ class User(db.Model):
 class Deck(db.Model):
     __tablename__ = "deck"
 
-    id_deck = db.Column(INTEGER(unsigned=True), primary_key=True, autoincrement=True)
+    id_deck = db.Column(db.String(255), primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
     background = db.Column(db.String(255), nullable=False)
 
 
 class Card(db.Model):
     __tablename__ = "card"
 
-    id_card = db.Column(INTEGER(unsigned=True), primary_key=True, autoincrement=True)
+    id_card = db.Column(INTEGER(unsigned=True), primary_key=True)
     front_text = db.Column(db.String(255), nullable=False)
     back_text = db.Column(db.String(255), nullable=False)
+
+
+class Deck_has_deck(db.Model):
+    __tablename__ = "deck_has_deck"
+
+    id_parent_deck = db.Column(db.String(255), db.ForeignKey("deck.id_deck"), primary_key=True)
+    id_child_deck = db.Column(db.String(255), db.ForeignKey("deck.id_deck"), primary_key=True)
 
 
 class Deck_has_card(db.Model):
     __tablename__ = "deck_has_card"
 
-    id_deck = db.Column(INTEGER(unsigned=True), db.ForeignKey("deck.id_deck"), primary_key=True)
+    id_deck = db.Column(db.String(255), db.ForeignKey("deck.id_deck"), primary_key=True)
     id_card = db.Column(INTEGER(unsigned=True), db.ForeignKey("card.id_card"), primary_key=True)
 
 
 class User_has_deck(db.Model):
     __tablename__ = "user_has_deck"
 
-    id_user = db.Column(INTEGER(unsigned=True), db.ForeignKey("user.id_user"), primary_key=True)
-    id_deck = db.Column(INTEGER(unsigned=True), db.ForeignKey("deck.id_deck"), primary_key=True)
+    id_user = db.Column(db.String(255), db.ForeignKey("user.id_user"), primary_key=True)
+    id_root_deck = db.Column(db.String(255), db.ForeignKey("deck.id_deck"), primary_key=True)
 
 
 app.config['CORS_HEADERS'] = 'Content-Type'
