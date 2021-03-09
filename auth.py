@@ -12,7 +12,7 @@ def login_post():
     password = request.form.get('password')
     remember = True if request.form.get('remember') else False
 
-    user = User.query.filter_by(email=email).first()
+    user = app.User.query.filter_by(email=email).first()
 
     # check if the user actually exists
     # take the user-supplied password, hash it, and compare it to the hashed password in the database
@@ -30,7 +30,7 @@ def signup_post():
     password_hash = request.form.get('password')
     phone = request.form.get('phone')
 
-    user = User.query.filter_by(
+    user = app.User.query.filter_by(
         email=email
     ).first()  # if this returns a user, then the email already exists in database
 
@@ -38,15 +38,15 @@ def signup_post():
         return 'The user is already exists', 400
 
     # create a new user with the form data. Hash the password so the plaintext version isn't saved.
-    new_user = User(email=email,
-                    username=username,
-                    password_hash=generate_password_hash(password_hash, method='sha256'),
-                    phone=phone
-                    )
+    new_user = app.User(email=email,
+                        username=username,
+                        password_hash=generate_password_hash(password_hash, method='sha256'),
+                        phone=phone
+                        )
 
     # add the new user to the database
-    db.session.add(new_user)
-    db.session.commit()
+    app.db.session.add(new_user)
+    app.db.session.commit()
 
     return 'Account created successfully', 200
 
