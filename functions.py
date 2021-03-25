@@ -1,4 +1,5 @@
-import app
+# import app
+import re
 
 
 def is_dictionary_empty(input_dict):
@@ -72,3 +73,7 @@ def extract_card():
 
 def test():
     return app.User.query.get(1)
+
+
+def find_all(a_str, sub):
+    return [m.start() for m in re.finditer(sub, a_str)]  # [0, 5, 10, 15]

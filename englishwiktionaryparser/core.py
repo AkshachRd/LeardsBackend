@@ -1,7 +1,9 @@
-from bs4 import BeautifulSoup
+import re
+import requests
 from copy import copy
 from string import digits
-import requests
+from bs4 import BeautifulSoup
+from englishwiktionaryparser.utils import WordData, Definition
 
 PARTS_OF_SPEECH = [
     "noun", "verb", "adjective", "adverb", "determiner",
@@ -11,6 +13,21 @@ PARTS_OF_SPEECH = [
     "definitions", "pronoun", "particle", "predicative", "participle",
     "suffix",
 ]
+
+
+def is_subheading(child, parent):
+    child_headings = child.split(".")
+    parent_headings = parent.split(".")
+    if len(child_headings) <= len(parent_headings):
+        return False
+    for child_heading, parent_heading in zip(child_headings, parent_headings):
+        if child_heading != parent_heading:
+            return False
+    return True
+
+
+def count_digits(string):
+    return len(list(filter(str.isdigit, string)))
 
 
 class EnglishWiktionaryParser(object):
@@ -23,7 +40,7 @@ class EnglishWiktionaryParser(object):
         self.language = 'english'
         self.current_word = None
         self.PARTS_OF_SPEECH = copy(PARTS_OF_SPEECH)
-        self.INCLUDED_ITEMS = self.PARTS_OF_SPEECH + ['etymology', 'pronunciation']
+        self.INCLUDED_ITEMS = self.PARTS_OF_SPEECH + ['pronunciation']
 
     def clean_html(self):
         unwanted_classes = ['sister-wikipedia', 'thumb', 'reference', 'cited-source']
@@ -148,6 +165,46 @@ class EnglishWiktionaryParser(object):
                 def_type = ''
             definition_list.append((def_index, definition_text, def_type))
         return definition_list
+
+    def parse_examples(self, word_contents):
+        definition_id_list = self.get_id_list(word_contents, 'definitions')
+        example_list = []
+        for def_index, def_id, def_type in definition_id_list:
+            span_tag = self.soup.find_all('span', {'id': def_id})[0]
+            table = span_tag.parent
+            while table.name != 'ol':
+                table = table.find_next_sibling()
+            examples = []
+            while table and table.name == 'ol':
+                for element in table.find_all('dd'):
+                    example_text = re.sub(r'\([^)]*\)', '', element.text.strip())
+                    if example_text:
+                        examples.append(example_text)
+                    element.clear()
+                example_list.append((def_index, examples, def_type))
+                for quot_list in table.find_all(['ul', 'ol']):
+                    quot_list.clear()
+                table = table.find_next_sibling()
+        return example_list
+
+    def map_to_object(self, word_data):
+        json_obj_list = []
+
+        data_obj = WordData()
+        data_obj.word = self.current_word
+        for pronunciation_index, text, audio_links in word_data['pronunciations']:
+            data_obj.transcriptions = text
+            data_obj.audio_links = audio_links
+        for definition_index, definition_text, definition_type in word_data['definitions']:
+            def_obj = Definition()
+            def_obj.text = definition_text
+            def_obj.part_of_speech = definition_type
+            for example_index, examples, _ in word_data['examples']:
+                if example_index.startswith(definition_index):
+                    def_obj.example_uses = examples
+            data_obj.definition_list.append(def_obj)
+        json_obj_list.append(data_obj.to_json())
+        return json_obj_list
 
     def fetch(self, word):
         response = self.session.get(self.url.format(word))

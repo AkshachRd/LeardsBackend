@@ -31,6 +31,7 @@ class User(db.Model):
     email = db.Column(db.String(255), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     phone = db.Column(db.String(20))
+    # model = db.Column(db.JSON, nullable=False)
 
 
 class Deck(db.Model):
