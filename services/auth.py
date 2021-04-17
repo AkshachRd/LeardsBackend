@@ -1,27 +1,6 @@
-import re
-
 from models.deck import Deck
 from models.user import User
-from models.user_has_deck import User_has_deck
-
-
-def is_dictionary_empty(input_dict):
-    """
-    Checking if dictionary is empty recursively
-    :return: True if dictionary is empty, False if not
-    """
-    checked_dictionary = []
-
-    def dictionary_check(dict_for_checking):
-        for key, value in dict_for_checking.items():
-            if isinstance(value, dict):
-                dictionary_check(value)
-            else:
-                checked_dictionary.append(bool(value))
-
-    dictionary_check(input_dict)
-
-    return not any(checked_dictionary)
+from models.user_has_deck import UserHasDeck
 
 
 def fetch_model(user):
@@ -44,7 +23,7 @@ def fetch_model(user):
         }
     }
 
-    user_decks = User_has_deck.query.filter_by(id_user=user.id_user).all()
+    user_decks = UserHasDeck.query.filter_by(id_user=user.id_user).all()
     for user_deck in user_decks:
         model['dataState']['rootGroup']['content'].append(extract_deck(user_deck.id_deck, 'root'))
 
@@ -76,7 +55,3 @@ def extract_card():
 
 def test():
     return User.query.get(1)
-
-
-def find_all(a_str, sub):
-    return [m.start() for m in re.finditer(sub, a_str)]  # [0, 5, 10, 15]
