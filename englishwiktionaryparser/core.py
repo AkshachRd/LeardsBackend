@@ -1,8 +1,10 @@
 import re
-import requests
 from copy import copy
 from string import digits
+
+import requests
 from bs4 import BeautifulSoup
+
 from englishwiktionaryparser.utils import WordData, Definition
 
 PARTS_OF_SPEECH = [
@@ -198,6 +200,8 @@ class EnglishWiktionaryParser(object):
         for definition_index, definition_text, definition_type in word_data['definitions']:
             def_obj = Definition()
             def_obj.text = definition_text
+            if def_obj.text:
+                def_obj.additional_info = def_obj.text.pop(0)
             def_obj.part_of_speech = definition_type
             for example_index, examples, _ in word_data['examples']:
                 if example_index.startswith(definition_index):

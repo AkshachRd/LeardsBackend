@@ -35,14 +35,16 @@ class WordData(object):
 
 
 class Definition(object):
-    def __init__(self, part_of_speech=None, text=None, example_uses=None):
+    def __init__(self, part_of_speech=None, additional_info=None, text=None, example_uses=None):
         self.part_of_speech = part_of_speech if part_of_speech else ''
+        self.additional_info = additional_info if additional_info else ''
         self.text = text if text else ''
         self.example_uses = example_uses if example_uses else []
 
     def to_json(self):
         return {
             'partOfSpeech': self.part_of_speech,
+            'additionalInfo': self.additional_info,
             'text': self.text,
             'examples': self.example_uses
         }
