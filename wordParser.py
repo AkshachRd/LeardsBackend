@@ -1,4 +1,5 @@
 from wiktionaryparser import WiktionaryParser
+
 from functions import is_dictionary_empty
 
 parser = WiktionaryParser()

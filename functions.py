@@ -1,5 +1,8 @@
-import app
 import re
+
+from models.deck import Deck
+from models.user import User
+from models.user_has_deck import User_has_deck
 
 
 def is_dictionary_empty(input_dict):
@@ -41,7 +44,7 @@ def fetch_model(user):
         }
     }
 
-    user_decks = app.User_has_deck.query.filter_by(id_user=user.id_user).all()
+    user_decks = User_has_deck.query.filter_by(id_user=user.id_user).all()
     for user_deck in user_decks:
         model['dataState']['rootGroup']['content'].append(extract_deck(user_deck.id_deck, 'root'))
 
@@ -55,7 +58,7 @@ def extract_deck(id_deck, id_parent_deck):
     :param id_deck:
     :return: Dictionary with full deck info
     """
-    deck = app.Deck.query.get(id_deck)
+    deck = Deck.query.get(id_deck)
     model_deck = {
         'id': id_deck,
         'parentId': id_parent_deck,
@@ -72,7 +75,7 @@ def extract_card():
 
 
 def test():
-    return app.User.query.get(1)
+    return User.query.get(1)
 
 
 def find_all(a_str, sub):

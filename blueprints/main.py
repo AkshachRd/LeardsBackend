@@ -1,8 +1,10 @@
+import json
+
+import git
 from flask import Blueprint, request
 from flask_cors import cross_origin
+
 from wordParser import parse_word
-import json
-import git
 
 main = Blueprint('main', __name__)
 
