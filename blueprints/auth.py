@@ -2,7 +2,7 @@ from flask import Blueprint, request
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # import jwt
-from functions import fetch_model, test
+from services.auth import fetch_model, test
 from models.user import User
 from my_sqlalchemy import db
 
