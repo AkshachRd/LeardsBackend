@@ -1,10 +1,14 @@
-from flask import Blueprint, request
+import datetime
+
+import jwt
+from flask import Blueprint, request, jsonify, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# import jwt
-from services.auth import fetch_model, test
+from sqlalchemy import exc
 from models.user import User
 from my_sqlalchemy import db
+from services.auth import fetch_model, test
+from settings import JWT_KEY
 
 auth = Blueprint('auth', __name__)
 
@@ -13,20 +17,17 @@ auth = Blueprint('auth', __name__)
 def login():
     email = request.form.get('email')
     password = request.form.get('password')
-    remember = True if request.form.get('remember') else False
 
     user = User.query.filter_by(email=email).first()
 
-    # check if the user actually exists
-    # take the user-supplied password, hash it, and compare it to the hashed password in the database
-    if not user or not check_password_hash(user.password, password):
-        return 'User doesn\'t exist or password is wrong', 400  # if the user doesn't exist or password is wrong,
-    #token = jwt.encode({
-    #    'userId': user.id_user,
-    #    'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=60)
-    #}, app.app.config['SECRET_KEY'])
-    # if the above check passes, then we know the user has the right credentials
-    return fetch_model(user)
+    if not user:
+        return jsonify({'massage': 'User with this email does not exist'}), 404
+    if not check_password_hash(user.password, password):
+        return jsonify({'massage': 'Invalid password'}), 403
+
+    token = create_token(user.id_user)
+
+    return jsonify({'token': token.decode('utf-8')}), 200
 
 
 @auth.route('/signup', methods=['POST'])
@@ -36,39 +37,49 @@ def signup():
     password = request.form.get('password')
     phone = request.form.get('phone')
 
-    user = User.query.filter_by(
-        email=email
-    ).first()  # if this returns a user, then the email already exists in database
+    user = User.query.filter_by(email=email).first()
 
-    if user:  # if a user is found, we want to redirect back to signup page so user can try again
-        return 'The user is already exists', 400
+    if user:
+        return jsonify({'massage': 'This email is already used'}), 409
 
-    # create a new user with the form data. Hash the password so the plaintext version isn't saved.
     new_user = User(email=email,
-                        username=username,
-                        password_hash=generate_password_hash(password, method='sha256'),
-                        phone=phone
-                        )
+                    username=username,
+                    password_hash=generate_password_hash(password, method='sha256'),
+                    phone=phone
+                    )
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+    except exc.SQLAlchemyError:
+        db.session.rollback()
+        return jsonify({'massage': 'DB insert error'}), 500
 
-    # add the new user to the database
-    db.session.add(new_user)
-    db.session.commit()
-
-    return 'Account created successfully', 200
+    token = create_token(new_user.id)
+    return jsonify({'token': token.decode('utf-8')}), 201
 
 
 @auth.route('/logout')
 def logout():
-    return test()
+    return 'sing'#test()
 
-#def check_for_token(func):
-#    @wraps(func)
-#    def wrapped(*args, **kwargs):
-#        token = request.args.get('token')
-#        if not token:
-#        try:
-#            data = jwt.decode(token, app.app.config['SECRET_KEY'])
-#        except:
-#            return jsonify({'massage': 'Invalid token'}), 403
-#        return func(*args, **kwargs)
-#    return wrapped
+
+@auth.route('/check_status')
+def check_status(func):
+    token = request.args.get('token')
+    if not token:
+        return jsonify({'massage': 'Missing token'}), 404
+
+    data = jwt.decode(token, JWT_KEY)
+    if data:
+        return jsonify({'massage': 'Authorised', 'token': token}), 200
+    else:
+        return jsonify({'massage': 'Authorised', 'token': token}), 200
+
+
+def create_token(userId):
+    token = jwt.encode({
+        'userId': userId,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=60)
+    }, JWT_KEY)
+
+    return token
