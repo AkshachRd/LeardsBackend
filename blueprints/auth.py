@@ -32,10 +32,10 @@ def login():
 
 @auth.route('/signup', methods=['POST'])
 def signup():
-    email = request.form.get('email')
-    username = request.form.get('name')
-    password = request.form.get('password')
-    phone = request.form.get('phone')
+    email = request.json['email']
+    username = request.json['name']
+    password = request.json['password']
+    phone = request.json['phone']
 
     user = User.query.filter_by(email=email).first()
 
