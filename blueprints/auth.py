@@ -33,12 +33,12 @@ def login():
 @auth.route('/signup', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def signup():
-    # TODO: Здесь такая радость: на Pythonanywhere шиза с заголовками, нужно решить их, ещё лучше бы оттестировать
-    #  это всё на лакальной БД
-    email = request.form.get('email')
-    username = request.form.get('username')
-    password = request.form.get('password')
-    phone = request.form.get('phone')
+    # TODO: лучше бы оттестировать это всё на лакальной БД
+    request_data_dict = request.get_json()
+    email = request_data_dict['email']
+    username = request_data_dict['username']
+    password = request_data_dict['password']
+    phone = request_data_dict['phone']
 
     user = User.query.filter_by(email=email).first()
 
