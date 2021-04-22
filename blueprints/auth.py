@@ -8,7 +8,6 @@ from flask_cors import cross_origin
 from sqlalchemy import exc
 from models.user import User
 from my_sqlalchemy import db
-from services.auth import fetch_model, test
 from settings import JWT_KEY
 
 auth = Blueprint('auth', __name__)
@@ -34,8 +33,10 @@ def login():
 @auth.route('/signup', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def signup():
+    # TODO: Здесь такая радость: на Pythonanywhere шиза с заголовками, нужно решить их, ещё лучше бы оттестировать
+    #  это всё на лакальной БД
     email = request.form.get('email')
-    username = request.form.get('name')
+    username = request.form.get('username')
     password = request.form.get('password')
     phone = request.form.get('phone')
 

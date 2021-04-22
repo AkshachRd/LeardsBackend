@@ -21,6 +21,7 @@ def get_word():
 @main.route('/webhook', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def webhook():
+    # TODO: Ха-ха, это не работает для приватных репозиториев, нужно сделать SSH ключ
     if request.method == 'POST':
         repo = git.Repo('./LeardsBackend')
         origin = repo.remotes.origin
