@@ -32,10 +32,10 @@ def login():
 
 @auth.route('/signup', methods=['POST'])
 def signup():
-    email = request.json['email']
-    username = request.json['name']
-    password = request.json['password']
-    phone = request.json['phone']
+    email = request.form.get('email')
+    username = request.form.get('name')
+    password = request.form.get('password')
+    phone = request.form.get('phone')
 
     user = User.query.filter_by(email=email).first()
 
@@ -58,9 +58,10 @@ def signup():
     return jsonify({'token': token.decode('utf-8')}), 201
 
 
-@auth.route('/logout')
+@auth.route('/logout', methods=['POST'])
 def logout():
-    return 'sing'#test()
+    password = request.form.get('password')
+    return password
 
 
 @auth.route('/check_status')
