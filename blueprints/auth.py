@@ -3,6 +3,7 @@ import datetime
 import jwt
 from flask import Blueprint, request, jsonify, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_cors import cross_origin
 
 from sqlalchemy import exc
 from models.user import User
@@ -31,6 +32,7 @@ def login():
 
 
 @auth.route('/signup', methods=['POST'])
+@cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def signup():
     email = request.form.get('email')
     username = request.form.get('name')
