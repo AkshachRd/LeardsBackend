@@ -35,6 +35,7 @@ def login():
 def signup():
     # TODO: лучше бы оттестировать это всё на лакальной БД
     request_data_dict = request.get_json()
+    user_id = request_data_dict['userId']
     email = request_data_dict['email']
     username = request_data_dict['username']
     password = request_data_dict['password']
@@ -45,7 +46,8 @@ def signup():
     if user:
         return jsonify({'massage': 'This email is already used'}), 409
 
-    new_user = User(email=email,
+    new_user = User(id_user=user_id,
+                    email=email,
                     username=username,
                     password_hash=generate_password_hash(password, method='sha256'),
                     phone=phone
