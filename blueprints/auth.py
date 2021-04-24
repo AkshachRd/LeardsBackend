@@ -19,7 +19,6 @@ def login():
     password = request.form.get('password')
 
     user = User.query.filter_by(email=email).first()
-
     if not user:
         return jsonify({'massage': 'User with this email does not exist'}), 404
     if not check_password_hash(user.password, password):
@@ -27,7 +26,7 @@ def login():
 
     token = create_token(user.id_user)
 
-    return jsonify({'token': token.decode('utf-8')}), 200
+    return jsonify({'token': token}), 200
 
 
 @auth.route('/signup', methods=['POST'])
@@ -42,12 +41,9 @@ def signup():
     phone = request_data_dict['phone']
 
     user = User.query.filter_by(id_user=user_id).first()
-
     if user:
         return jsonify({'massage': 'This ID is already used'}), 409
-
     user = User.query.filter_by(email=email).first()
-
     if user:
         return jsonify({'massage': 'This email is already used'}), 409
 
@@ -74,23 +70,25 @@ def logout():
     return password
 
 
-@auth.route('/check_status')
-def check_status(func):
-    token = request.args.get('token')
+@auth.route('/check_status', methods=['POST'])
+@cross_origin(origin='*', headers=['Content-Type'])
+def check_status():
+    token = request.get_json()['token']
     if not token:
         return jsonify({'massage': 'Missing token'}), 404
 
-    data = jwt.decode(token, JWT_KEY)
-    if data:
-        return jsonify({'massage': 'Authorised', 'token': token}), 200
-    else:
-        return jsonify({'massage': 'Authorised', 'token': token}), 200
+    try:
+        data = jwt.decode(token, JWT_KEY, algorithms="HS256")
+
+        return jsonify({'massage': 'Authorised', 'token': token, 'data': data}), 200
+    except jwt.exceptions.ExpiredSignatureError:
+        return jsonify({'massage': 'Unauthorised', 'token': token}), 200
 
 
-def create_token(userId):
+def create_token(user_id):
     token = jwt.encode({
-        'userId': userId,
+        'userId': user_id,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=60)
-    }, JWT_KEY)
+    }, JWT_KEY, algorithm="HS256")
 
     return token
