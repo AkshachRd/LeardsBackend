@@ -41,6 +41,11 @@ def signup():
     password = request_data_dict['password']
     phone = request_data_dict['phone']
 
+    user = User.query.filter_by(id_user=user_id).first()
+
+    if user:
+        return jsonify({'massage': 'This ID is already used'}), 409
+
     user = User.query.filter_by(email=email).first()
 
     if user:
@@ -59,7 +64,7 @@ def signup():
         db.session.rollback()
         return jsonify({'massage': 'DB insert error'}), 500
 
-    token = create_token(new_user.id)
+    token = create_token(user_id)
     return jsonify({'token': token.decode('utf-8')}), 201
 
 
