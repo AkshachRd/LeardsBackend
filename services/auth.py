@@ -1,6 +1,12 @@
+import datetime
+
+import jwt
+from flask import jsonify, make_response
+
 from models.deck import Deck
 from models.user import User
 from models.user_has_deck import UserHasDeck
+from settings import JWT_KEY
 
 
 def fetch_model(user):
@@ -55,3 +61,24 @@ def extract_card():
 
 def test():
     return User.query.get(1)
+
+
+def create_token(user_id):
+    token = jwt.encode({
+        'userId': user_id,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=60)
+    }, JWT_KEY, algorithm="HS256")
+
+    return token
+
+
+def check_status(token):
+    if not token:
+        return jsonify({'massage': 'Missing token'}), 404
+
+    try:
+        data = jwt.decode(token, JWT_KEY, algorithms="HS256")
+
+        return jsonify({'token': token, 'userId': data['UserId']}), 200
+    except jwt.exceptions.ExpiredSignatureError:
+        return make_response('Invalid token', 401, {'WWW-Authenticate': 'Basic realm: "Access to the Leards"'})
