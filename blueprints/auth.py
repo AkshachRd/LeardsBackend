@@ -65,7 +65,7 @@ def signup():
         return jsonify({'massage': 'DB insert error'}), 500
 
     token = create_token(user_id)
-    return jsonify({'token': token.decode('utf-8')}), 201
+    return jsonify({'token': token}), 201
 
 
 @auth.route('/logout', methods=['POST'])
