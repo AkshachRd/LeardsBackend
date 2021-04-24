@@ -7,6 +7,7 @@ from blueprints.auth import auth as auth_blueprint
 from blueprints.main import main as main_blueprint
 from my_sqlalchemy import SQLALCHEMY_DATABASE_URI, db
 
+import models.user, models.deck, models.user_has_deck, models.deck_has_card, models.card, models.deck_has_deck
 # create and configure the app
 app = Flask(__name__)
 CORS(app)
