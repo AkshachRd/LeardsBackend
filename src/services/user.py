@@ -1,12 +1,12 @@
 from flask import jsonify
 
-from models.card import Card
-from models.deck import Deck
-from models.deck_has_card import DeckHasCard
-from models.deck_has_deck import DeckHasDeck
+from src.models.card import Card
+from src.models.deck import Deck
+from src.models.deck_has_card import DeckHasCard
+from src.models.deck_has_deck import DeckHasDeck
 
-from models.user import User
-from models.user_has_deck import UserHasDeck
+from src.models.user import User
+from src.models.user_has_deck import UserHasDeck
 
 
 def fetch_model(user_id):

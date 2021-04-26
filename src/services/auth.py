@@ -1,6 +1,6 @@
 import datetime
 
-import app
+from src import app
 import jwt
 from flask import jsonify, make_response
 

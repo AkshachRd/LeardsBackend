@@ -3,11 +3,10 @@ import os
 from flask import Flask
 from flask_cors import CORS
 
-from blueprints.auth import auth as auth_blueprint
-from blueprints.main import main as main_blueprint
-from db import SQLALCHEMY_DATABASE_URI, db
+from src.blueprints.auth import auth as auth_blueprint
+from src.blueprints.main import main as main_blueprint
+from src.db import SQLALCHEMY_DATABASE_URI, db
 
-import models.user, models.deck, models.user_has_deck, models.deck_has_card, models.card, models.deck_has_deck
 # create and configure the app
 app = Flask(__name__)
 CORS(app)

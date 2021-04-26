@@ -3,9 +3,8 @@ import json
 import git
 from flask import Blueprint, request
 from flask_cors import cross_origin
-from services.user import fetch_model
 
-from wordParser import parse_word
+from src.wordParser import parse_word
 
 main = Blueprint('main', __name__)
 

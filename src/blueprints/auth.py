@@ -3,9 +3,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import cross_origin
 
 from sqlalchemy import exc
-from models.user import User
-from db import db
-from services.auth import create_token, check_status
+from src.models.user import User
+from src.db import db
+from src.services.auth import create_token, check_status
 
 auth = Blueprint('auth', __name__)
 

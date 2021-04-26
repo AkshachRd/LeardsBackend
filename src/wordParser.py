@@ -1,6 +1,6 @@
 from wiktionaryparser import WiktionaryParser
 
-from services.parser import is_dictionary_empty
+from src.services.parser import is_dictionary_empty
 
 parser = WiktionaryParser()
 parser.set_default_language('english')
