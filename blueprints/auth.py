@@ -4,7 +4,7 @@ from flask_cors import cross_origin
 
 from sqlalchemy import exc
 from models.user import User
-from my_sqlalchemy import db
+from db import db
 from services.auth import create_token, check_status
 
 auth = Blueprint('auth', __name__)

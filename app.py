@@ -5,13 +5,19 @@ from flask_cors import CORS
 
 from blueprints.auth import auth as auth_blueprint
 from blueprints.main import main as main_blueprint
-from my_sqlalchemy import SQLALCHEMY_DATABASE_URI, db
+from db import SQLALCHEMY_DATABASE_URI, db
 
 import models.user, models.deck, models.user_has_deck, models.deck_has_card, models.card, models.deck_has_deck
 # create and configure the app
 app = Flask(__name__)
 CORS(app)
 app.config['DEBUG'] = True
+
+app.config['DB_USERNAME'] = os.environ.get('DB_USERNAME')
+app.config['DB_PASSWORD'] = os.environ.get('DB_PASSWORD')
+app.config['DB_HOSTNAME'] = os.environ.get('DB_HOSTNAME')
+app.config['DB_NAME'] = os.environ.get('DB_NAME')
+app.config['JWT_KEY'] = os.environ.get('JWT_KEY')
 
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_POOL_RECYCLE"] = 299

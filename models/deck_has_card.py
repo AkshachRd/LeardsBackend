@@ -1,4 +1,4 @@
-from my_sqlalchemy import db
+from db import db
 
 
 class DeckHasCard(db.Model):
