@@ -1,16 +1,20 @@
-from wiktionaryparser import WiktionaryParser
+from englishwiktionaryparser import EnglishWiktionaryParser
 
 from src.services.parser import is_dictionary_empty
 
-parser = WiktionaryParser()
-parser.set_default_language('english')
+parser = EnglishWiktionaryParser()
 
 
 def parse_word(word):
-    fetched_word = parser.fetch(word)[0]
+    fetched_word = parser.fetch(word)
+    if fetched_word:
+        return fetched_word[0]
+    else:
+        return None
 
+    """
     if is_dictionary_empty(fetched_word):
-        return 'null'
+        return None
     else:
         # Audio
         uk_audio = None
@@ -39,54 +43,5 @@ def parse_word(word):
                 if substr_index != -1:
                     for char in range(substr_index + 5, text.find('/', substr_index + 6) + 1):
                         uk_transcription += text[char]
-
-        return {
-            'word': word,
-            'pronunciation': {
-                'audioUK': uk_audio,
-                'transcriptionUK': uk_transcription,
-                'audioUS': us_audio,
-                'transcriptionUS': us_transcription
-            },
-            'partsOfSpeech': {
-                'noun': {
-                    'plural': 'Forests',
-                    'definitions': [
-                        'A dense uncultivated tract of trees and undergrowth, larger than woods.',
-                        [
-                            'Any dense collection or amount.',
-                            'a forest of criticism'
-                        ],
-                        '(historical) A defined area of land set aside in England as royal hunting ground or for other '
-                        'privileged use; all such areas. ',
-                        '(graph theory) A graph with no cycles; i.e., a graph made up of trees.',
-                        '(computing, Microsoft Windows) A group of domains that are managed as a unit.',
-                        'The colour forest green.'
-                    ],
-                    'meronyms': ['tree'],
-                    'derivedTerms': [
-                        'Black Forest',
-                        'Bracknell Forest',
-                        'can\'t see the forest for the trees',
-                        'Forest City',
-                        'Forest County',
-                        'forested',
-                        'Forest Heath',
-                        'forestial',
-                        'forestlike',
-                        'Peak Forest',
-                        'rainforest',
-                        'Sherwood Forest'
-                    ],
-                    'translation': 'Лес'
-                },
-                'verb': {
-                    'simplePresent': 'Forests',
-                    'presentParticiple': 'Foresting',
-                    'simple past': 'Forested',
-                    'pastParticiple': 'Forested',
-                    'definitions': ['(transitive) To cover an area with trees.'],
-                    'translation': None
-                }
-            }
-        }
+        return fetched_word[0]
+    """

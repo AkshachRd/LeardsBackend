@@ -1,10 +1,7 @@
-import json
-
 import git
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
-
-from src.wordParser import parse_word
+from englishwiktionaryparser import EnglishWiktionaryParser
 
 main = Blueprint('main', __name__)
 
@@ -13,8 +10,14 @@ main = Blueprint('main', __name__)
 @main.route('/parser')
 @cross_origin(origin='*', headers=['Content-Type'])
 def get_word():
-    word = request.args.get('word')
-    return json.dumps(parse_word(word))
+    parser = EnglishWiktionaryParser()
+
+    word = parser.fetch(request.args.get('word'))
+
+    if word:
+        jsonify(word[0]), 200
+    else:
+        return jsonify({'massage': 'Unknown word'}), 404
 
 
 # an autopull from GitHub repo to PythonAnyWhere func
