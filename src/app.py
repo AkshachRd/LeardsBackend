@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 from src.blueprints.auth import auth as auth_blueprint
 from src.blueprints.main import main as main_blueprint
-from src.db import SQLALCHEMY_DATABASE_URI, db
+from src import db
 
 # create and configure the app
 app = Flask(__name__)
@@ -18,10 +18,10 @@ app.config['DB_HOSTNAME'] = os.environ.get('DB_HOSTNAME')
 app.config['DB_NAME'] = os.environ.get('DB_NAME')
 app.config['JWT_KEY'] = os.environ.get('JWT_KEY')
 
-app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
+app.config["SQLALCHEMY_DATABASE_URI"] = db.SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db.init_app(app)
+db.db.init_app(app)
 
 app.config['CORS_HEADERS'] = 'Content-Type'
 #app.config.from_mapping(
