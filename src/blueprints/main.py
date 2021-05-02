@@ -15,7 +15,7 @@ def get_word():
     word = parser.fetch(request.args.get('word'))
 
     if word:
-        jsonify(word[0]), 200
+        return jsonify(word[0]), 200
     else:
         return jsonify({'massage': 'Unknown word'}), 404
 
