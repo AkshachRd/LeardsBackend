@@ -1,12 +1,12 @@
-from src import db
+from src.db import db
 
 
-class Deck(db.db.Model):
+class Deck(db.Model):
     __tablename__ = 'deck'
 
-    id_deck = db.db.Column(db.db.String(255), primary_key=True)
-    name = db.db.Column(db.db.String(255), nullable=False)
-    background = db.db.Column(db.db.String(255), nullable=False)
+    id_deck = db.Column(db.String(255), primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    background = db.Column(db.String(255), nullable=False)
 
     def __init__(self, name, background):
         self.name = name
