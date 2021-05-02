@@ -4,7 +4,7 @@ from flask_cors import cross_origin
 
 from sqlalchemy import exc
 from src.models.user import User
-from src.db import db
+from src import db
 from src.services.auth import create_token, check_status
 
 auth = Blueprint('auth', __name__)
@@ -55,10 +55,10 @@ def signup():
                     phone=phone
                     )
     try:
-        db.session.add(new_user)
-        db.session.commit()
+        db.db.session.add(new_user)
+        db.db.session.commit()
     except exc.SQLAlchemyError:
-        db.session.rollback()
+        db.db.session.rollback()
         return jsonify({'massage': 'DB insert error'}), 500
 
     token = create_token(new_user.id_user)
