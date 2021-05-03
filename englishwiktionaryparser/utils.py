@@ -1,7 +1,8 @@
 class WordData(object):
-    def __init__(self, word=None, definitions=None, transcriptions=None,
+    def __init__(self, word=None, translations=None, definitions=None, transcriptions=None,
                  audio_links=None):
         self.word = word if word else ''
+        self.translations = translations if translations else []
         self.definition_list = definitions
         self.transcriptions = transcriptions if transcriptions else []
         self.audio_links = audio_links if audio_links else []
@@ -26,6 +27,7 @@ class WordData(object):
     def to_json(self):
         return {
             'word': self.word,
+            'translations': self.translations,
             'pronunciations': {
                 'text': self.transcriptions,
                 'audio': self.audio_links

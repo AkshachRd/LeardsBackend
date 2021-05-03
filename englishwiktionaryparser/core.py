@@ -5,6 +5,8 @@ from string import digits
 import requests
 from bs4 import BeautifulSoup
 
+from googletrans import Translator
+
 from englishwiktionaryparser.utils import WordData, Definition
 
 PARTS_OF_SPEECH = [
@@ -30,6 +32,11 @@ def is_subheading(child, parent):
 
 def count_digits(string):
     return len(list(filter(str.isdigit, string)))
+
+
+def parse_translations(word):
+    translator = Translator()
+    return translator.translate(word, dest='ru', src='en').extra_data['all-translations'][0][1]
 
 
 class EnglishWiktionaryParser(object):
@@ -197,6 +204,7 @@ class EnglishWiktionaryParser(object):
 
         data_obj = WordData()
         data_obj.word = self.current_word
+        data_obj.translations = parse_translations(self.current_word)
         for pronunciation_index, text, audio_links in word_data['pronunciations']:
             data_obj.transcriptions = text
             data_obj.audio_links = audio_links
