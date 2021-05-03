@@ -132,16 +132,19 @@ class EnglishWiktionaryParser(object):
                 for audio_tag in list_element.find_all('div', {'class': 'mediaContainer'}):
                     audio_links.append(audio_tag.find('source')['src'])
                     audio_tag.extract()
-                if list_element.text and not list_element.find('table', {'class': 'audiotable'}):
+                if list_element.text and not list_element.find('table', {'class': 'audiotable'}) and\
+                        ('IPA' in list_element.text):
                     prev_end = 0
-                    while list_element.text.find('/', prev_end):
-                        transcription_start_index = list_element.text.find('/', prev_end)
+                    next_transcription_index = list_element.text.find('/', prev_end)
+                    while next_transcription_index != -1:
+                        transcription_start_index = next_transcription_index
                         if transcription_start_index < prev_end:
                             break
                         transcription_end_index = list_element.text.find('/', transcription_start_index + 1)
                         pronunciation_text.append(
                             list_element.text[transcription_start_index:transcription_end_index + 1])
                         prev_end = transcription_end_index + 1
+                        next_transcription_index = list_element.text.find('/', prev_end)
             pronunciation_list.append((pronunciation_index, pronunciation_text, audio_links))
         return pronunciation_list
 
