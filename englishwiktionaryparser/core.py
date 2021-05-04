@@ -36,7 +36,11 @@ def count_digits(string):
 
 def parse_translations(word):
     translator = Translator()
-    return translator.translate(word, dest='ru', src='en').extra_data['all-translations'][0][1]
+    translation = translator.translate(word, dest='ru', src='en')
+    if translation:
+        return translation.extra_data['all-translations'][0][1]
+    else:
+        return []
 
 
 class EnglishWiktionaryParser(object):
