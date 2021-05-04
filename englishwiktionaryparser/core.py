@@ -37,7 +37,8 @@ def count_digits(string):
 def parse_translations(word):
     translator = Translator()
     translation = translator.translate(word, dest='ru', src='en')
-    if len(translation.extra_data['all-translations']) >= 1 and len(translation.extra_data['all-translations'][0]) >= 2:
+    if translation.extra_data['all-translations'] and translation.extra_data['all-translations'][0] and \
+            len(translation.extra_data['all-translations'][0]) >= 2:
         return translation.extra_data['all-translations'][0][1]
     elif translation.text:
         return [translation.text]
