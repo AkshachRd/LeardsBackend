@@ -17,7 +17,7 @@ def get_word():
     if word:
         return jsonify(word[0]), 200
     else:
-        return jsonify({'massage': 'Unknown word'}), 404
+        return jsonify({'message': 'Unknown word'}), 404
 
 
 # an autopull from GitHub repo to PythonAnyWhere func

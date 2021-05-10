@@ -19,9 +19,9 @@ def login_password():
 
     user = User.query.filter_by(email=email).first()
     if not user:
-        return jsonify({'massage': 'User with this email does not exist'}), 404
+        return jsonify({'message': 'User with this email does not exist'}), 404
     if not check_password_hash(user.password, password):
-        return jsonify({'massage': 'Invalid password'}), 403
+        return jsonify({'message': 'Invalid password'}), 403
 
     token = create_token(user.id_user)
 
@@ -47,7 +47,7 @@ def signup():
 
     user = User.query.filter_by(email=email).first()
     if user:
-        return jsonify({'massage': 'This email is already used'}), 409
+        return jsonify({'message': 'This email is already used'}), 409
 
     new_user = User(email=email,
                     username=username,
@@ -59,7 +59,7 @@ def signup():
         db.db.session.commit()
     except exc.SQLAlchemyError:
         db.db.session.rollback()
-        return jsonify({'massage': 'DB insert error'}), 500
+        return jsonify({'message': 'DB insert error'}), 500
 
     token = create_token(new_user.id_user)
     return jsonify({'token': token}), 201

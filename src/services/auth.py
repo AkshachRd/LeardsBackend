@@ -16,7 +16,7 @@ def create_token(user_id):
 
 def check_status(token):
     if not token:
-        return jsonify({'massage': 'Missing token'}), 404
+        return jsonify({'message': 'Missing token'}), 404
 
     try:
         data = jwt.decode(token, app.app.config['JWT_KEY'], algorithms="HS256")
