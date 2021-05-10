@@ -45,6 +45,7 @@ def parse_translations(word):
     else:
         return []
 
+
 class EnglishWiktionaryParser(object):
     def __init__(self):
         self.url = "https://en.wiktionary.org/wiki/{}?printable=yes"
@@ -228,8 +229,8 @@ class EnglishWiktionaryParser(object):
         return json_obj_list
 
     def fetch(self, word):
-        response = self.session.get(self.url.format(word))
+        self.current_word = word.lower()
+        response = self.session.get(self.url.format(self.current_word))
         self.soup = BeautifulSoup(response.text.replace('>\n<', '><'), 'html.parser')
-        self.current_word = word
         self.clean_html()
         return self.get_word_data()

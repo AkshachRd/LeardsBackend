@@ -26,7 +26,7 @@ class WordData(object):
 
     def to_json(self):
         return {
-            'word': self.word,
+            'word': self.word[0].upper() + self.word[1:],
             'translations': self.translations,
             'pronunciations': {
                 'text': self.transcriptions,
