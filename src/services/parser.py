@@ -1,5 +1,9 @@
 import re
 
+from englishwiktionaryparser import EnglishWiktionaryParser
+
+parser = EnglishWiktionaryParser()
+
 
 def is_dictionary_empty(input_dict):
     """
@@ -22,3 +26,11 @@ def is_dictionary_empty(input_dict):
 
 def find_all(a_str, sub):
     return [m.start() for m in re.finditer(sub, a_str)]  # [0, 5, 10, 15]
+
+
+def parse_word(word):
+    fetched_word = parser.fetch(word)
+    if fetched_word:
+        return fetched_word[0]
+    else:
+        return None
