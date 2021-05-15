@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import cross_origin
 
@@ -10,9 +10,9 @@ from src.services.auth import create_token, check_status
 auth = Blueprint('auth', __name__)
 
 
-@auth.route('/login_password', methods=['POST'])
+@auth.route('/login', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
-def login_password():
+def login():
     request_data_dict = request.get_json()
     email = request_data_dict['email']
     password = request_data_dict['password']
@@ -23,17 +23,23 @@ def login_password():
     if not check_password_hash(user.password, password):
         return jsonify({'message': 'Invalid password'}), 403
 
-    token = create_token(user.id_user)
+    expires_in = 60 * 60 * 24  # 24 часа
+    token = create_token(user.id_user, expires_in)
+    response = make_response(jsonify({'message': 'Successfully logged!'}), 200)
+    response.set_cookie('lrds', token, max_age=expires_in, httponly=True)
 
-    return jsonify({'token': token, 'userId': user.id_user}), 200
+    return response
 
 
 @auth.route('/login_token', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def login_token():
-    token = request.get_json()['token']
+    token = request.cookies.get('lrds')
 
-    return check_status(token)
+    if token:
+        return check_status(token)
+    else:
+        return jsonify({'message': 'The user\'s token was not provided'}), 400
 
 
 @auth.route('/signup', methods=['POST'])
@@ -61,13 +67,18 @@ def signup():
         db.db.session.rollback()
         return jsonify({'message': 'DB insert error'}), 500
 
-    token = create_token(new_user.id_user)
-    return jsonify({'token': token}), 201
+    expires_in = 60 * 60 * 24  # 24 часа
+    token = create_token(new_user.id_user, expires_in)
+    response = make_response(jsonify({'message': 'Successfully signed up!'}), 201)
+    response.set_cookie('lrds', token, max_age=expires_in, httponly=True)
+
+    return response
 
 
 @auth.route('/logout', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def logout():
-    token = request.get_json()['token']
+    response = make_response(jsonify({'message': 'Successfully loged out!'}), 200)
+    response.set_cookie('lrds', '', max_age=0, httponly=True)
 
-    return check_status(token)
+    return response

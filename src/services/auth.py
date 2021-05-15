@@ -5,10 +5,10 @@ import jwt
 from flask import jsonify, make_response
 
 
-def create_token(user_id):
+def create_token(user_id, expires_in):
     token = jwt.encode({
         'userId': user_id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=60)
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=expires_in)
     }, app.app.config['JWT_KEY'], algorithm="HS256")
 
     return token
