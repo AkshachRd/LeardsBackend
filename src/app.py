@@ -5,6 +5,7 @@ from flask_cors import CORS
 
 from src.blueprints.auth import auth as auth_blueprint
 from src.blueprints.main import main as main_blueprint
+from src.blueprints.user import user as user_blueprint
 from src import db
 
 # create and configure the app
@@ -36,11 +37,10 @@ except OSError:
     pass
 
 # blueprint for auth routes in our app
-
-
 app.register_blueprint(auth_blueprint)
 
-# blueprint for non-auth parts of app
-
-
+# blueprint for parser and webhook parts of app
 app.register_blueprint(main_blueprint)
+
+# blueprint for user part of app
+app.register_blueprint(user_blueprint)

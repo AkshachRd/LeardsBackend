@@ -9,7 +9,7 @@ from src.models.user import User
 from src.models.user_has_deck import UserHasDeck
 
 
-def fetch_model(user_id):
+def fetch_user_model(user_id):
     user = User.query.filter_by(id_user=user_id).first()
     model = {
         'user': {
