@@ -25,7 +25,7 @@ def login():
 
     expires_in = 60 * 60 * 24  # 24 часа
     token = create_token(user.id_user, expires_in)
-    response = make_response(jsonify({'message': 'Successfully logged!'}), 200)
+    response = make_response(jsonify({'userId': user.id_user, 'message': 'Successfully logged in!'}), 200)
     response.set_cookie('lrds', token, max_age=expires_in, httponly=True)
 
     return response
@@ -49,7 +49,6 @@ def signup():
     email = request_data_dict['email']
     username = request_data_dict['username']
     password = request_data_dict['password']
-    phone = request_data_dict['phone']
 
     user = User.query.filter_by(email=email).first()
     if user:
@@ -58,7 +57,6 @@ def signup():
     new_user = User(email=email,
                     username=username,
                     password_hash=generate_password_hash(password, method='sha256'),
-                    phone=phone
                     )
     try:
         db.db.session.add(new_user)
