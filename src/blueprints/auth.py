@@ -31,7 +31,7 @@ def login():
     return response
 
 
-@auth.route('/login_token', methods=['POST'])
+@auth.route('/auth', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def login_token():
     token = request.cookies.get('lrds')
@@ -39,7 +39,7 @@ def login_token():
     if token:
         return check_status(token)
     else:
-        return jsonify({'message': 'The user\'s token was not provided'}), 400
+        return jsonify({'message': 'The users token was not provided'}), 400
 
 
 @auth.route('/signup', methods=['POST'])

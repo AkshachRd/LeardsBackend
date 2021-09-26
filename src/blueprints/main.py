@@ -12,10 +12,10 @@ main = Blueprint('main', __name__)
 def get_word():
     parser = EnglishWiktionaryParser()
 
-    word = parser.fetch(request.args.get('word'))
+    word_data = parser.fetch(request.args.get('word'))
 
-    if word:
-        return jsonify(word[0]), 200
+    if word_data:
+        return jsonify(word_data[0]), 200
     else:
         return jsonify({'message': 'Unknown word'}), 404
 
