@@ -7,7 +7,7 @@ main = Blueprint('main', __name__)
 
 
 # parse a word from wiktionary
-@main.route('/parser', methods=['GET'])
+@main.route('/word_parser', methods=['GET'])
 @cross_origin(origin='*', headers=['Content-Type'])
 def get_word():
     parser = EnglishWiktionaryParser()
