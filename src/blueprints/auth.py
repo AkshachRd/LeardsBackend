@@ -4,7 +4,7 @@ from flask_cors import cross_origin
 
 from sqlalchemy import exc
 from src.models.user import User
-from src import db
+from src import app
 from src.services.auth import create_token, check_status
 
 auth = Blueprint('auth', __name__)
@@ -59,10 +59,10 @@ def signup():
                     password_hash=generate_password_hash(password, method='sha256'),
                     )
     try:
-        db.db.session.add(new_user)
-        db.db.session.commit()
+        app.db.session.add(new_user)
+        app.db.session.commit()
     except exc.SQLAlchemyError:
-        db.db.session.rollback()
+        app.db.session.rollback()
         return jsonify({'message': 'DB insert error'}), 500
 
     expires_in = 60 * 60 * 24  # 24 часа
