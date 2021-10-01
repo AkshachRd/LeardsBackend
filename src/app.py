@@ -2,11 +2,12 @@ import os
 
 from flask import Flask
 from flask_cors import CORS
+from sqlalchemy import create_engine
 
-from src.blueprints.auth import auth as auth_blueprint
-from src.blueprints.main import main as main_blueprint
-from src.blueprints.user import user as user_blueprint
-from src import db
+from src.blueprints.auth import auth_blueprint
+from src.blueprints.main import main_blueprint
+from src.blueprints.user import user_blueprint
+from src.models import metadata
 
 # create and configure the app
 app = Flask(__name__)
@@ -19,10 +20,16 @@ app.config['DB_HOSTNAME'] = os.environ.get('DB_HOSTNAME')
 app.config['DB_NAME'] = os.environ.get('DB_NAME')
 app.config['JWT_KEY'] = os.environ.get('JWT_KEY')
 
-app.config["SQLALCHEMY_DATABASE_URI"] = db.SQLALCHEMY_DATABASE_URI
+SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{db_username}:{db_password}@{db_hostname}/{db_name}".format(
+    db_username=app.config['DB_USERNAME'], db_password=app.config['DB_PASSWORD'], db_hostname=app.config[
+        'DB_HOSTNAME'], db_name=app.config['DB_NAME'])
+engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
+conn = engine.connect()
+app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db.db.init_app(app)
+
+metadata.create_all(engine)
 
 app.config['CORS_HEADERS'] = 'Content-Type'
 #app.config.from_mapping(

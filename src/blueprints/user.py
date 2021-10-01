@@ -3,10 +3,10 @@ from flask_cors import cross_origin
 
 from src.services.user import fetch_user_model
 
-user = Blueprint('user', __name__)
+user_blueprint = Blueprint('user_blueprint', __name__)
 
 
-@user.route('/fetch_model', methods=['GET'])
+@user_blueprint.route('/fetch_model', methods=['GET'])
 @cross_origin(origin='*', headers=['Content-Type'])
 def fetch_model():
     user_id = request.args.get('userId')
@@ -18,7 +18,7 @@ def fetch_model():
     return jsonify({'models': model}), 200
 
 
-@user.route('/commit_model', methods=['PUT'])
+@user_blueprint.route('/commit_model', methods=['PUT'])
 @cross_origin(origin='*', headers=['Content-Type'])
-def fetch_model():
+def commit_model():
     return "Commited"

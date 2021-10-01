@@ -1,16 +1,16 @@
 from flask import jsonify
+from sqlalchemy import select
+import src.app as app
 
-from src.models.card import Card
-from src.models.deck import Deck
-from src.models.deck_has_card import DeckHasCard
-from src.models.deck_has_deck import DeckHasDeck
-
-from src.models.user import User
-from src.models.user_has_deck import UserHasDeck
+from src.models import card as card_table, deck as deck_table, deck_has_card as deck_has_card_table, deck_has_deck as deck_has_deck_table, user as user_table, user_has_deck as user_has_deck_table
 
 
 def fetch_user_model(user_id):
-    user = User.query.filter_by(id_user=user_id).first()
+    stmt = (
+        select([user_table]).
+        where(user_table.c.id_user == user_id)
+    )
+    user = app.conn.execute(stmt).first()
     model = {
         'user': {
             'id': user.id_user,
@@ -31,7 +31,11 @@ def fetch_user_model(user_id):
         }
     }
 
-    user_decks = UserHasDeck.query.filter_by(id_user=user.id_user).all()
+    stmt = (
+        select([user_has_deck_table]).
+        where(user_has_deck_table.c.id_user == user.id_user)
+    )
+    user_decks = app.conn.execute(stmt)
     for user_deck in user_decks:
         model['dataState']['rootGroup']['content'].append(extract_deck(user_deck.id_root_deck, 'root'))
 
@@ -39,7 +43,12 @@ def fetch_user_model(user_id):
 
 
 def extract_deck(deck_id, parent_deck_id):
-    deck = Deck.query.get(deck_id)
+    stmt = (
+        select([deck_table]).
+        where(deck_table.c.id_deck == deck_id).first()
+    )
+    deck = app.conn.execute(stmt)
+
     model_deck = {
         'id': deck_id,
         'parentId': parent_deck_id,
@@ -48,7 +57,12 @@ def extract_deck(deck_id, parent_deck_id):
         'content': []
     }
 
-    nested_decks = DeckHasDeck.query.filter_by(id_parent_deck=deck_id).all()
+    stmt = (
+        select([deck_has_deck_table]).
+        where(deck_has_deck_table.c.id_parent_deck == deck_id)
+    )
+    nested_decks = app.conn.execute(stmt)
+
     if nested_decks:
         for nested_deck in nested_decks:
             model_deck['content'].append(extract_deck(nested_deck.id_child_deck, nested_deck.id_parent_deck))
@@ -61,7 +75,12 @@ def extract_deck(deck_id, parent_deck_id):
 def extract_cards(deck_id):
     cards = []
 
-    decks_with_cards = DeckHasCard.query.filter_by(id_deck=deck_id).all()
+    stmt = (
+        select([deck_has_card_table]).
+        where(deck_has_card_table.c.id_deck == deck_id)
+    )
+    decks_with_cards = app.conn.execute(stmt)
+
     if decks_with_cards:
         for deck_with_card in decks_with_cards:
             cards.append(extract_card(deck_with_card))
@@ -97,7 +116,12 @@ def extract_card(deck_with_card):
         }
     }
 
-    card = Card.query.filter_by(id_card=deck_with_card.id_card).first()
+    stmt = (
+        select([card_table]).
+        where(card_table.c.id_card == deck_with_card.id_card)
+    )
+    card = app.conn.execute(stmt).first()
+
     model_card['id'] = card.id_card
     model_card['word'] = card.front_text
     model_card['partOfSpeech']['noun']['translation'] = card.back_text
