@@ -1,4 +1,3 @@
-import git
 from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 from englishwiktionaryparser import EnglishWiktionaryParser
