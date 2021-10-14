@@ -1,18 +1,18 @@
 from flask import Blueprint, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_cors import cross_origin
+from flask_cors import CORS
 
 from sqlalchemy import select, insert, text, exc
 from src.models import user as user_table
-from src.services.auth import create_token, check_status
+from src.services.auth import create_token, get_user_id_from_token
 import src.app as app_file
 
 auth_blueprint = Blueprint('auth', __name__)
 
+CORS(auth_blueprint, supports_credentials=True)
+
 
 @auth_blueprint.route('/login', methods=['POST'])
-@cross_origin(origin='*', headers=['Content-Type', 'Authorization', 'access-control-allow-credentials'],
-              supports_credentials=True)
 def login():
     request_data_dict = request.get_json()
     user_login = request_data_dict['login']
@@ -29,31 +29,37 @@ def login():
     if not check_password_hash(user.password_hash, password):
         return jsonify({'message': 'Invalid password'}), 403
 
-    expires_in = 60 * 60 * 24  # 24 часа
-    token = create_token(user.id_user, expires_in)
+    token = create_token(user.id_user, app_file.app.config['EXPIRES_IN'])
     response = make_response(jsonify({'userId': user.id_user,
                                       'username': user.username,
                                       'email': user.email}), 200)
-    response.set_cookie('lrds', token, max_age=expires_in, httponly=True, samesite="none", secure=True)
+    response.set_cookie('lrds', token, app_file.app.config['EXPIRES_IN'], httponly=True, samesite="none", secure=True)
 
     return response
 
 
 @auth_blueprint.route('/auth', methods=['POST'])
-@cross_origin(origin='*', headers=['Content-Type', 'Authorization', 'access-control-allow-credentials'],
-              supports_credentials=True)
 def login_token():
     token = request.cookies.get('lrds')
-
-    if token:
-        return check_status(token)
-    else:
+    if not token:
         return jsonify({'message': 'The users token was not provided'}), 400
+
+    user_id = get_user_id_from_token(token)
+    if not user_id:
+        return make_response('Invalid token', 401, {'WWW-Authenticate': 'Basic realm: "Access to the Leards"'})
+
+    token = create_token(user_id, app_file.app.config['EXPIRES_IN'])
+    response = make_response(jsonify({'userId': user_id}), 200)
+    response.set_cookie('lrds',
+                        token,
+                        max_age=app_file.app.config['EXPIRES_IN'],
+                        httponly=True,
+                        samesite="none",
+                        secure=True)
+    return response
 
 
 @auth_blueprint.route('/signup', methods=['POST'])
-@cross_origin(origin='*', headers=['Content-Type', 'Authorization', 'access-control-allow-credentials'],
-              supports_credentials=True)
 def signup():
     request_data_dict = request.get_json()
     email = request_data_dict['email']
@@ -62,7 +68,7 @@ def signup():
 
     stmt = (
         select([user_table]).
-        where(user_table.c.email == email)
+            where(user_table.c.email == email)
     )
     user = app_file.conn.execute(stmt).first()
     if user:
@@ -70,7 +76,7 @@ def signup():
 
     stmt = (
         insert(user_table).
-        values(email=email, username=username, password_hash=generate_password_hash(password, method="sha256"))
+            values(email=email, username=username, password_hash=generate_password_hash(password, method="sha256"))
     )
     try:
         new_user = app_file.conn.execute(stmt)
@@ -88,8 +94,6 @@ def signup():
 
 
 @auth_blueprint.route('/logout', methods=['POST'])
-@cross_origin(origin='*', headers=['Content-Type', 'Authorization', 'access-control-allow-credentials'],
-              supports_credentials=True)
 def logout():
     response = make_response(jsonify({'message': 'Successfully loged out!'}), 200)
     response.set_cookie('lrds', '', max_age=0, httponly=True, samesite="none", secure=True)
