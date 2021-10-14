@@ -19,6 +19,9 @@ app.config['DB_PASSWORD'] = os.environ.get('DB_PASSWORD')
 app.config['DB_HOSTNAME'] = os.environ.get('DB_HOSTNAME')
 app.config['DB_NAME'] = os.environ.get('DB_NAME')
 app.config['JWT_KEY'] = os.environ.get('JWT_KEY')
+app.config['EXPIRES_IN'] = os.environ.get('EXPIRES_IN')
+app.config['ROOT_DECK_ID'] = os.environ.get('ROOT_DECK_ID')
+app.config['ROOT_DECK_NAME'] = os.environ.get('ROOT_DECK_NAME')
 
 SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{db_username}:{db_password}@{db_hostname}/{db_name}".format(
     db_username=app.config['DB_USERNAME'], db_password=app.config['DB_PASSWORD'], db_hostname=app.config[
