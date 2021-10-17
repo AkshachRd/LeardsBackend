@@ -48,8 +48,19 @@ def login_token():
     if not user_id:
         return make_response('Invalid token', 401, {'WWW-Authenticate': 'Basic realm: "Access to the Leards"'})
 
+    stmt = (
+        select([user_table]).
+        where(user_table.c.id_user == user_id)
+    )
+    user = app_file.conn.execute(stmt).first()
+
+    if not user:
+        return jsonify({'message': 'User with this email does not exist'}), 404
+
     token = create_token(user_id, app_file.app.config['EXPIRES_IN'])
-    response = make_response(jsonify({'userId': user_id}), 200)
+    response = make_response(jsonify({'userId': user_id,
+                                      'username': user.username,
+                                      'email': user.email}), 200)
     response.set_cookie('lrds',
                         token,
                         max_age=app_file.app.config['EXPIRES_IN'],
